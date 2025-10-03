@@ -4,12 +4,12 @@ version: '3.8'
 # Mendefinisikan Voulmes
 volumes: 
   # Untuk Menyimpan Seluruh Data Dalam Database
-  inventarisdb:
+  proyek1db:
 
 # Mendefinisikan Networks
 networks:
   # Untuk Mengkoneksikan Antar Services
-  inventarisapp:
+  proyek1app:
 
 # Mendefinisikan Services Yang Akan Dipakai
 services:
@@ -22,13 +22,12 @@ services:
       # Folder Web
       - "./htdocs:/var/www"
       # Folder Konfigurasi Nginx
-      - "./.build/nginx/conf.d:/etc/nginx/conf.d"
-      - "./.build/nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./build/nginx/conf.d:/etc/nginx/conf.d"
+      - "./build/nginx/nginx.conf:/etc/nginx/nginx.conf"
     # Ekspose Port
     ports: 
     # 80 (http://localhost)
-      - "80:80" #inventaris laravel
-      - "85:85" #inventaris ci
+      - "8001:80" # proyek 1
       - "443:443"
     # Jalankan Nginx Jika Service php Dan db Sudah Berjalan
     depends_on: 
@@ -36,7 +35,7 @@ services:
 
     # Koneksikan Ke Network localapp
     networks: 
-      - inventarisapp
+      - proyek1app
     
     # Tambahkan Extra Host
     extra_hosts:
@@ -45,17 +44,17 @@ services:
   # Nama Service Untuk PHP
   php:
     # Build Image Dengan Dockerfile Di Folder ./.build/php
-    build: ./.build/php
+    build: ./build/php
     # Kaitkan Folder Lokal Ke Container
     volumes:
       # Jalankan PHP Di Semua Folder Web
       - "./htdocs:/var/www"
       # Folder Konfigurasi PHP 
-      - "./.build/php/php.ini:/usr/local/etc/php/php.ini"
+      - "./build/php/php.ini:/usr/local/etc/php/php.ini"
 
     # Koneksikan Ke Network localapp
     networks: 
-      - inventarisapp
+      - proyek1app
 
 # Nama Service Untuk Database  
   db:
@@ -71,10 +70,10 @@ services:
       - "3307:3306"
     # Simpan Semua Data Dalam Volumes localdb
     volumes: 
-     - "inventarisdb:/var/lib/mariadb"
+     - "proyek1db:/var/lib/mariadb"
     # Koneksikan Ke Network localapp
     networks: 
-      - inventarisapp
+      - proyek1app
   
   # Nama Service Untuk PHPMYADMIN
   phpmyadmin:
@@ -82,8 +81,8 @@ services:
     image: phpmyadmin/phpmyadmin
     # Expose Port
     ports: 
-      # Gunakan Port 8087 Untuk Mengakses phpmyadmin
-      - "8080:80"
+      # Gunakan Port 8081 Untuk Mengakses phpmyadmin
+      - "8081:80"
     # Koneksikan Ke Network localapp
     networks: 
-      - inventarisapp
+      - proyek1app
